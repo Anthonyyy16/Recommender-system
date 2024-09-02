@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyNdIhsRwGNdRGL8knh9Lz/7",
+      "authorship_tag": "ABX9TyPZpDqw7XtPj6nDBWzs/8m9",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -16,7 +16,7 @@
     },
     "widgets": {
       "application/vnd.jupyter.widget-state+json": {
-        "3cb7a0a3d1714a32a02b82e183f88ebc": {
+        "8d846e6015c6449e8df2a40093f42653": {
           "model_module": "@jupyter-widgets/controls",
           "model_name": "DropdownModel",
           "model_module_version": "1.5.0",
@@ -4838,11 +4838,11 @@
             "description_tooltip": null,
             "disabled": false,
             "index": 0,
-            "layout": "IPY_MODEL_69050b675263489dbc875fb9c56b2296",
-            "style": "IPY_MODEL_f4f53723a1a34661ab1b256a99f64e16"
+            "layout": "IPY_MODEL_0b4c2f10ee4c4c89a7398a4c65155b20",
+            "style": "IPY_MODEL_22494d5611884ba48e040de7f5a75982"
           }
         },
-        "69050b675263489dbc875fb9c56b2296": {
+        "0b4c2f10ee4c4c89a7398a4c65155b20": {
           "model_module": "@jupyter-widgets/base",
           "model_name": "LayoutModel",
           "model_module_version": "1.2.0",
@@ -4894,7 +4894,7 @@
             "width": null
           }
         },
-        "f4f53723a1a34661ab1b256a99f64e16": {
+        "22494d5611884ba48e040de7f5a75982": {
           "model_module": "@jupyter-widgets/controls",
           "model_name": "DescriptionStyleModel",
           "model_module_version": "1.5.0",
@@ -4920,7 +4920,7 @@
         "colab_type": "text"
       },
       "source": [
-        "<a href=\"https://colab.research.google.com/github/Anthonyyy16/Recommender-system/blob/main/UI.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+        "<a href=\"https://colab.research.google.com/github/Anthonyyy16/Recommender-system/blob/main/UI.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
       ]
     },
     {
@@ -5035,7 +5035,7 @@
       "source": [
         "import pandas as pd\n",
         "import ipywidgets as widgets\n",
-        "from IPython.display import display\n",
+        "\n",
         "\n",
         "# Read the CSV file\n",
         "csv_file = 'tmdb_5000_movies.csv'  # Replace with your file path\n",
@@ -5066,15 +5066,15 @@
           "base_uri": "https://localhost:8080/",
           "height": 49,
           "referenced_widgets": [
-            "3cb7a0a3d1714a32a02b82e183f88ebc",
-            "69050b675263489dbc875fb9c56b2296",
-            "f4f53723a1a34661ab1b256a99f64e16"
+            "8d846e6015c6449e8df2a40093f42653",
+            "0b4c2f10ee4c4c89a7398a4c65155b20",
+            "22494d5611884ba48e040de7f5a75982"
           ]
         },
         "id": "I0ln5RP2KfsA",
-        "outputId": "dc9c2c68-4281-43ee-baac-084ef67b996d"
+        "outputId": "a17b00c8-3dd7-4dd6-9b55-681cb3eeaeb5"
       },
-      "execution_count": 9,
+      "execution_count": 10,
       "outputs": [
         {
           "output_type": "display_data",
@@ -5085,7 +5085,7 @@
             "application/vnd.jupyter.widget-view+json": {
               "version_major": 2,
               "version_minor": 0,
-              "model_id": "3cb7a0a3d1714a32a02b82e183f88ebc"
+              "model_id": "8d846e6015c6449e8df2a40093f42653"
             }
           },
           "metadata": {}
