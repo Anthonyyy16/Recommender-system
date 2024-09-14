@@ -161,7 +161,7 @@ def recommender_system_2(df_original, df_scaled, features, scaler):
 
         # Display recommendations with original values
         st.subheader('Recommended Smartphones for Your Preferences:')
-        st.write("Columns in recommendations DataFrame:", recommendations.columns)
+     
         st.write(recommendations[['brand_name', 'model', 'price', 'battery_capacity',
                                   'processor_brand', 'ram_capacity', 'internal_memory',
                                   'screen_size', 'primary_camera_rear', 'primary_camera_front']])
