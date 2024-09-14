@@ -32,28 +32,23 @@ def preprocess_data(df):
     return df, df_original, features, scaler
 
 # Recommend smartphones based on similarity
-def recommend_smartphones(df, user_preferences, features, scaler, top_n=10):
-    try:
-        # Scale user preferences using the same MinMaxScaler
-        user_preferences_scaled = scaler.transform([user_preferences])
-    except ValueError as e:
-        st.error("Please enter valid preferences for all fields.")
-        return []
+# Add brand filtering as an optional parameter
+def recommend_smartphones(df, user_preferences, features, scaler, top_n=10, filter_by_brand=None):
+    user_preferences_scaled = scaler.transform([user_preferences])
 
-    # Create a DataFrame for the user preferences
     user_preferences_df = pd.DataFrame(user_preferences_scaled, columns=features)
 
-    # Append the user preferences as a new row in the dataframe
     df_with_user = pd.concat([df, user_preferences_df], ignore_index=True)
 
-    # Compute cosine similarity between user preferences and all smartphones
     similarity = cosine_similarity(df_with_user[features])
 
-    # Get the top N most similar smartphones (excluding the user preference row itself)
     similar_indices = similarity[-1, :-1].argsort()[-top_n:][::-1]
-    
-    # Return both the indices and similarity scores for better output
+
+    if filter_by_brand:
+        similar_indices = df_with_user.iloc[similar_indices].query(f'brand_name == "{filter_by_brand}"').index
+
     return similar_indices, similarity[-1, similar_indices]
+
 
 # Recommender System 1: Recommend similar phones based on user selection
 def recommender_system_1(df_original, df_scaled, features, scaler):
