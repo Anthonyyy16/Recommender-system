@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
-# Load the dataset
+# Load the dataset with caching for faster reloading
 @st.cache_data
 def load_data():
     df = pd.read_csv('smartphone.csv')  # Replace with your file path
@@ -11,62 +11,69 @@ def load_data():
 
 # Preprocess the data
 def preprocess_data(df):
-    # Remove 'MYR ' from the price column and convert to numeric
+    # Clean and convert price column
     df['price'] = df['Price'].str.replace('MYR ', '', regex=False).str.replace(',', '', regex=False).astype(float)
 
     # Select numerical columns for similarity computation
+    # Automatically select numeric columns except for non-relevant ones like 'Price' and 'model'
     features = ['price', 'battery_capacity', 'ram_capacity', 'internal_memory', 'screen_size', 'primary_camera_rear', 'primary_camera_front']
     df[features] = df[features].apply(pd.to_numeric, errors='coerce')  # Convert to numeric
 
-    # Fill missing values with the mean
+    # Fill missing values with the mean of each column
     df[features] = df[features].fillna(df[features].mean())
 
-    # Save the original values for display later
+    # Create a copy of the original dataset for display
     df_original = df.copy()
 
-    # Normalize the feature values to a range of [0,1] for comparison
+    # Normalize features for comparison
     scaler = MinMaxScaler()
     df[features] = scaler.fit_transform(df[features])
     
     return df, df_original, features, scaler
 
 # Recommend smartphones based on similarity
-# Add brand filtering as an optional parameter
-def recommend_smartphones(df, user_preferences, features, scaler, top_n=10, filter_by_brand=None):
-    user_preferences_scaled = scaler.transform([user_preferences])
+def recommend_smartphones(df, user_preferences, features, scaler, top_n=10):
+    try:
+        # Scale user preferences using the same MinMaxScaler
+        user_preferences_scaled = scaler.transform([user_preferences])
+    except ValueError as e:
+        st.error("Please enter valid preferences for all fields.")
+        return []
 
+    # Create a DataFrame for the user preferences
     user_preferences_df = pd.DataFrame(user_preferences_scaled, columns=features)
 
+    # Append the user preferences as a new row in the dataframe
     df_with_user = pd.concat([df, user_preferences_df], ignore_index=True)
 
+    # Compute cosine similarity between user preferences and all smartphones
     similarity = cosine_similarity(df_with_user[features])
 
+    # Get the top N most similar smartphones (excluding the user preference row itself)
     similar_indices = similarity[-1, :-1].argsort()[-top_n:][::-1]
-
-    if filter_by_brand:
-        similar_indices = df_with_user.iloc[similar_indices].query(f'brand_name == "{filter_by_brand}"').index
-
+    
+    # Return both the indices and similarity scores for better output
     return similar_indices, similarity[-1, similar_indices]
-
 
 # Recommender System 1: Recommend similar phones based on user selection
 def recommender_system_1(df_original, df_scaled, features, scaler):
     st.subheader('Recommender System 1: Select a Phone')
     
-    # Let the user select a phone
+    # Let the user select a phone from the list
     selected_phone = st.selectbox('Choose a Phone', df_original['model'])
-    
-    # Find the phone in the original dataframe
+
+    # Find the row of the selected phone in the original dataframe
     selected_phone_row = df_original[df_original['model'] == selected_phone].iloc[0]
     
-    # Extract features of the selected phone
+    # Extract the features of the selected phone
     selected_phone_features = selected_phone_row[features].values.reshape(1, -1)
-    
-    # Calculate similarity with all phones in the dataset
+
+    # Compute similarity between selected phone and all others
     similarity = cosine_similarity(selected_phone_features, df_scaled[features])
-    
-    # Get top 5 most similar phones
-    top_indices = similarity.argsort()[0][-6:-1][::-1]  # Exclude the selected phone
+
+    # Get top N most similar phones (excluding the selected one)
+    top_n = st.slider('Number of recommendations', 1, 10, 5)
+    top_indices = similarity.argsort()[0][-top_n-1:-1][::-1]  # Exclude the selected phone
     
     st.write("Other similar phones you might like:")
     st.write(df_original.iloc[top_indices][['brand_name', 'model', 'price', 'battery_capacity', 
