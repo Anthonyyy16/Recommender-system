@@ -65,7 +65,8 @@ def recommender_system_1(df_original, df_scaled, features, scaler):
     
     # Calculate similarity with all phones in the dataset
     similarity = cosine_similarity(selected_phone_features, df_scaled[features])
-    
+
+     top_n = st.slider('Number of recommendations', 1, 10, 5)
     # Get top 5 most similar phones
     top_indices = similarity.argsort()[0][-6:-1][::-1]  # Exclude the selected phone
     
