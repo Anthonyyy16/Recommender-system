@@ -126,45 +126,45 @@ def recommender_system_2(df_original, df_scaled, features, scaler):
     user_preferences = [price, battery_capacity, ram_capacity, internal_memory, screen_size, rear_camera, front_camera]
 
     # Only recommend smartphones when submit button is pressed
-   if submit_button:
-    # Start filtering the dataframe based on selected brand, processor brand, and user preferences
-    df_filtered = df_original.copy()
+    if submit_button:
+        # Start filtering the dataframe based on selected brand, processor brand, and user preferences
+        df_filtered = df_original.copy()
 
-    if selected_brand != 'Any Brand':
-        df_filtered = df_filtered[df_filtered['brand_name'] == selected_brand]
+        if selected_brand != 'Any Brand':
+            df_filtered = df_filtered[df_filtered['brand_name'] == selected_brand]
 
-    if selected_processor_brand != 'Any Processor Brand':
-        df_filtered = df_filtered[df_filtered['processor_brand'] == selected_processor_brand]
+        if selected_processor_brand != 'Any Processor Brand':
+            df_filtered = df_filtered[df_filtered['processor_brand'] == selected_processor_brand]
 
-    # Filter based on the max price and other user preferences
-    df_filtered = df_filtered[
-        (df_filtered['price'] <= price) &
-        (df_filtered['battery_capacity'] >= battery_capacity) &
-        (df_filtered['ram_capacity'] >= ram_capacity) &
-        (df_filtered['internal_memory'] >= internal_memory) &
-        (df_filtered['screen_size'] >= screen_size) &
-        (df_filtered['primary_camera_rear'] >= rear_camera) &
-        (df_filtered['primary_camera_front'] >= front_camera)
-    ]
+        # Filter based on the max price and other user preferences
+        df_filtered = df_filtered[
+            (df_filtered['price'] <= price) &
+            (df_filtered['battery_capacity'] >= battery_capacity) &
+            (df_filtered['ram_capacity'] >= ram_capacity) &
+            (df_filtered['internal_memory'] >= internal_memory) &
+            (df_filtered['screen_size'] >= screen_size) &
+            (df_filtered['primary_camera_rear'] >= rear_camera) &
+            (df_filtered['primary_camera_front'] >= front_camera)
+        ]
 
-    # If df_filtered is empty after filtering, display a message
-    if df_filtered.empty:
-        st.subheader('No smartphones found for the selected filters.')
-        return
+        # If df_filtered is empty after filtering, display a message
+        if df_filtered.empty:
+            st.subheader('No smartphones found for the selected filters.')
+            return
+        
+        # Recommend smartphones
+        df_filtered_scaled = df_scaled.loc[df_filtered.index]  # Get scaled version of filtered data
+        similar_indices, similarity_scores = recommend_smartphones(df_filtered_scaled, user_preferences, features, scaler)
 
-    # Recommend smartphones
-    df_filtered_scaled = df_scaled.loc[df_filtered.index]  # Get scaled version of filtered data
-    similar_indices, similarity_scores = recommend_smartphones(df_filtered_scaled, user_preferences, features, scaler)
+        # Extract the recommended smartphones from the original dataframe using the indices
+        recommendations = df_filtered.iloc[similar_indices]
 
-    # Extract the recommended smartphones from the original dataframe using the indices
-    recommendations = df_filtered.iloc[similar_indices]
-
-    # Display recommendations with original values
-    st.subheader('Recommended Smartphones for Your Preferences:')
-    st.write(recommendations[['brand_name', 'model', 'price', 'battery_capacity',
-                              'processor_brand', 'ram_capacity', 'internal_memory',
-                              'screen_size', 'primary_camera_rear', 'primary_camera_front']])
-
+        # Display recommendations with original values
+        st.subheader('Recommended Smartphones for Your Preferences:')
+        st.write("Columns in recommendations DataFrame:", recommendations.columns)
+        st.write(recommendations[['brand_name', 'model', 'price', 'battery_capacity',
+                                  'processor_brand', 'ram_capacity', 'internal_memory',
+                                  'screen_size', 'primary_camera_rear', 'primary_camera_front']])
 
 # Main function to choose between the recommender systems
 def main():
